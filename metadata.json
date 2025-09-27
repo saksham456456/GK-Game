@@ -1,0 +1,5 @@
+{
+  "name": "AI Quiz Generator",
+  "description": "An interactive educational game that uses the Gemini API to generate custom quizzes on any topic. Test your knowledge with dynamically created questions and get immediate feedback.",
+  "requestFramePermissions": []
+}
