@@ -3,11 +3,19 @@ import React, { useState } from 'react';
 interface StartScreenProps {
   onTopicSelect: (topic: string) => void;
   error: string | null;
-  popularTopics: string[];
 }
 
-const StartScreen: React.FC<StartScreenProps> = ({ onTopicSelect, error, popularTopics }) => {
+const categorizedTopics = {
+  'Academia': ['World History', 'Science & Nature', 'Geography', 'Art and Literature', 'Technology'],
+  'Culture & Fun': ['General Knowledge', 'Movies & Pop Culture', 'Sports Trivia']
+};
+const categoryNames = Object.keys(categorizedTopics);
+
+
+const StartScreen: React.FC<StartScreenProps> = ({ onTopicSelect, error }) => {
   const [topic, setTopic] = useState('');
+  const [activeCategory, setActiveCategory] = useState(categoryNames[0]);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,15 +26,15 @@ const StartScreen: React.FC<StartScreenProps> = ({ onTopicSelect, error, popular
 
   return (
     <div className="animate-fade-in">
-      <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-        {/* Left Column: Generator */}
-        <div className="text-center md:text-left">
+      <div className="flex flex-col gap-8 items-center">
+        {/* Part 1: Custom Generator */}
+        <div className="w-full text-center">
           <h2 className="text-3xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
             Craft Your Challenge
           </h2>
-          <p className="text-slate-400 mb-6">Enter any topic, and our AI will instantly generate a unique quiz for you.</p>
+          <p className="text-slate-400 mb-6 max-w-lg mx-auto">Enter any topic, and our AI will instantly generate a unique quiz for you.</p>
           
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
             <input
               type="text"
               value={topic}
@@ -44,17 +52,52 @@ const StartScreen: React.FC<StartScreenProps> = ({ onTopicSelect, error, popular
             </button>
           </form>
             {error && (
-              <div className="bg-red-900/50 border border-red-700 text-red-300 p-3 rounded-lg mt-4 text-sm">
+              <div className="bg-red-900/50 border border-red-700 text-red-300 p-3 rounded-lg mt-4 text-sm max-w-lg mx-auto">
                 {error}
               </div>
             )}
         </div>
         
-        {/* Right Column: Popular Topics */}
-        <div className="border-t-2 md:border-t-0 md:border-l-2 border-slate-700/50 pt-8 md:pt-0 md:pl-8">
-          <h3 className="text-lg font-semibold mb-4 text-center md:text-left text-slate-300">Or get inspired:</h3>
-          <div className="flex flex-wrap justify-center md:justify-start gap-2">
-            {popularTopics.map((popularTopic) => (
+        {/* Divider */}
+        <div className="w-full max-w-md h-px bg-slate-700/50"></div>
+
+        {/* Part 2: Gyaan Ki Batti Jalao */}
+        <div className="w-full text-center">
+             <h2 className="text-3xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
+                Gyaan Ki Batti Jalao
+            </h2>
+            <p className="text-slate-400 mb-6 max-w-lg mx-auto">Taiyar ho,Aukaat ki baat karne ke liye?</p>
+            <button
+                onClick={() => onTopicSelect("Saksham's Brain")}
+                className="px-8 py-4 bg-gradient-to-r from-red-500 to-purple-600 text-white font-bold rounded-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105 glow-on-hover"
+            >
+                Enter the Arena
+            </button>
+        </div>
+
+        {/* Divider */}
+        <div className="w-full max-w-md h-px bg-slate-700/50"></div>
+        
+        {/* Part 3: Inspired Topics */}
+        <div className="w-full text-center">
+          <h3 className="text-lg font-semibold mb-4 text-slate-300">Or get inspired:</h3>
+           <div className="flex justify-center border-b border-slate-700 mb-4">
+            {categoryNames.map(category => (
+              <button 
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 -mb-px border-b-2 font-semibold transition-colors duration-300 ${
+                  activeCategory === category 
+                    ? 'border-cyan-400 text-cyan-300' 
+                    : 'border-transparent text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {categorizedTopics[activeCategory as keyof typeof categorizedTopics].map((popularTopic) => (
               <button
                 key={popularTopic}
                 onClick={() => onTopicSelect(popularTopic)}

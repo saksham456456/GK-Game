@@ -48,10 +48,20 @@ const quizSchema = {
 };
 
 export const generateQuizQuestions = async (topic: string, count: number, difficulty: Difficulty): Promise<Question[]> => {
-  const prompt = `Generate ${count} multiple-choice quiz questions about "${topic}" at an ${difficulty} difficulty level. Follow these rules strictly:
+  let prompt: string;
+
+  if (difficulty === "Saksham's Level") {
+    prompt = `Generate ${count} multiple-choice quiz questions. The topic is a challenging, diverse, and random mix of subjects including but not limited to: advanced technology, psychology, obscure world affairs, artificial intelligence principles, Indian civil services (UPSC) level trivia, complex finance concepts, and professional film editing techniques. The difficulty must be extremely hard.
+Follow these rules strictly:
 1. Each question must have an "options" array with exactly 4 unique string values.
 2. The "correctAnswer" string must be an exact, case-sensitive match to one of the strings in the "options" array.
 3. Provide a brief "explanation" for why the correct answer is correct for each question.`;
+  } else {
+    prompt = `Generate ${count} multiple-choice quiz questions about "${topic}" at an ${difficulty} difficulty level. Follow these rules strictly:
+1. Each question must have an "options" array with exactly 4 unique string values.
+2. The "correctAnswer" string must be an exact, case-sensitive match to one of the strings in the "options" array.
+3. Provide a brief "explanation" for why the correct answer is correct for each question.`;
+  }
 
   try {
     const response = await ai.models.generateContent({

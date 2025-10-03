@@ -7,17 +7,7 @@ import QuestionCard from './components/QuestionCard';
 import ResultScreen from './components/ResultScreen';
 import Loader from './components/Loader';
 import SplashScreen from './components/SplashScreen';
-
-const popularTopics = [
-    'General Knowledge', 
-    'World History', 
-    'Science & Nature', 
-    'Movies & Pop Culture', 
-    'Geography', 
-    'Art and Literature', 
-    'Technology', 
-    'Sports Trivia'
-];
+import GyaanInstructionsScreen from './components/GyaanInstructionsScreen';
 
 const ClassicLogo = () => (
   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -51,6 +41,14 @@ const App: React.FC = () => {
     if (!topic) return;
     setCurrentTopic(topic);
     setError(null);
+    if (topic === "Saksham's Brain") {
+      setGameState(GameState.GYAAN_INSTRUCTIONS);
+    } else {
+      setGameState(GameState.SELECT_DIFFICULTY);
+    }
+  };
+
+  const handleProceedFromInstructions = () => {
     setGameState(GameState.SELECT_DIFFICULTY);
   };
   
@@ -59,7 +57,8 @@ const App: React.FC = () => {
     setCurrentDifficulty(difficulty);
     setGameState(GameState.LOADING);
     try {
-      const newQuestions = await generateQuizQuestions(currentTopic, 5, difficulty);
+      const questionCount = difficulty === "Saksham's Level" ? 10 : 5;
+      const newQuestions = await generateQuizQuestions(currentTopic, questionCount, difficulty);
       if (newQuestions && newQuestions.length > 0) {
         setQuestions(newQuestions);
         setCurrentQuestionIndex(0);
@@ -105,12 +104,20 @@ const App: React.FC = () => {
     setError(null);
   }
 
+  const backToInstructions = () => {
+    setGameState(GameState.GYAAN_INSTRUCTIONS);
+    setError(null);
+  }
+
   const renderContent = () => {
     switch (gameState) {
       case GameState.LOADING:
         return <Loader topic={currentTopic} difficulty={currentDifficulty} />;
+      case GameState.GYAAN_INSTRUCTIONS:
+        return <GyaanInstructionsScreen onProceed={handleProceedFromInstructions} onBack={backToTopicSelect} />;
       case GameState.SELECT_DIFFICULTY:
-         return <DifficultyScreen topic={currentTopic} onSelect={startQuiz} onBack={backToTopicSelect} />;
+         const handleBack = currentTopic === "Saksham's Brain" ? backToInstructions : backToTopicSelect;
+         return <DifficultyScreen topic={currentTopic} onSelect={startQuiz} onBack={handleBack} />;
       case GameState.PLAYING:
         return (
           <QuestionCard
@@ -131,7 +138,7 @@ const App: React.FC = () => {
         );
       case GameState.START:
       default:
-        return <StartScreen onTopicSelect={handleTopicSelect} error={error} popularTopics={popularTopics} />;
+        return <StartScreen onTopicSelect={handleTopicSelect} error={error} />;
     }
   };
 
