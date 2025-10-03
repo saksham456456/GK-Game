@@ -24,8 +24,9 @@ const DifficultyScreen: React.FC<DifficultyScreenProps> = ({ topic, onSelect, on
         <button onClick={onBack} className="absolute top-4 left-4 text-slate-400 hover:text-cyan-300 transition-colors">
           &larr; Back to Rules
         </button>
-        <p className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
-          Sabke levels nikalne ka time aa gaya!🎮⚡
+        <p className="text-4xl font-black mb-6 uppercase tracking-wide text-shadow-fire flex items-baseline justify-center">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">Sabke levels nikalne ka time aa gaya!</span>
+          <span className="ml-2">🎮⚡</span>
         </p>
 
         <div className="relative w-96 h-64 flex items-center justify-center my-4">

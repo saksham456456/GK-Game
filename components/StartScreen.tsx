@@ -63,10 +63,12 @@ const StartScreen: React.FC<StartScreenProps> = ({ onTopicSelect, error }) => {
 
         {/* Part 2: Gyaan Ki Batti Jalao */}
         <div className="w-full text-center">
-             <h2 className="text-3xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">
-                Gyaan Ki Batti Jalao
+             <h2 className="text-4xl font-black mb-3 uppercase tracking-wider text-shadow-fire flex items-baseline justify-center">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">Gyaan Ki</span>
+                <span className="mx-1">💡</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-red-500 to-pink-500">Jalao</span>
             </h2>
-            <p className="text-slate-400 mb-6 max-w-lg mx-auto">Taiyar ho,Aukaat ki baat karne ke liye?</p>
+            <p className="text-slate-300 mb-6 max-w-lg mx-auto font-semibold italic">Taiyar ho,Aukaat ki baat karne ke liye?</p>
             <button
                 onClick={() => onTopicSelect("Saksham's Brain")}
                 className="px-8 py-4 bg-gradient-to-r from-red-500 to-purple-600 text-white font-bold rounded-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105 glow-on-hover"
