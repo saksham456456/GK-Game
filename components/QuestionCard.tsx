@@ -7,6 +7,7 @@ interface QuestionCardProps {
   questionNumber: number;
   totalQuestions: number;
   onAnswer: (isCorrect: boolean) => void;
+  onNext: () => void;
 }
 
 const ProgressBar: React.FC<{ current: number; total: number }> = ({ current, total }) => {
@@ -23,7 +24,7 @@ const ProgressBar: React.FC<{ current: number; total: number }> = ({ current, to
 
 const DURATION = 10;
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ question, questionNumber, totalQuestions, onAnswer }) => {
+const QuestionCard: React.FC<QuestionCardProps> = ({ question, questionNumber, totalQuestions, onAnswer, onNext }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [timeLeft, setTimeLeft] = useState(DURATION);
@@ -111,9 +112,17 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, questionNumber, t
       </div>
 
       {isAnswered && (
-        <div className="w-full max-w-2xl mt-6 p-4 bg-slate-900/50 border-l-4 border-cyan-400 rounded-r-lg animate-fade-in">
-          <h3 className="font-bold text-lg text-cyan-300 mb-2">Explanation</h3>
-          <p className="text-slate-300" dangerouslySetInnerHTML={{ __html: question.explanation }}></p>
+        <div className="w-full max-w-2xl mt-6 animate-fade-in text-center">
+          <div className="w-full p-4 bg-slate-900/50 border-l-4 border-cyan-400 rounded-r-lg text-left">
+            <h3 className="font-bold text-lg text-cyan-300 mb-2">Explanation</h3>
+            <p className="text-slate-300" dangerouslySetInnerHTML={{ __html: question.explanation }}></p>
+          </div>
+          <button
+            onClick={onNext}
+            className="mt-6 px-8 py-3 bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold rounded-lg hover:opacity-90 transition-all duration-300 transform hover:scale-105 glow-on-hover"
+          >
+            {questionNumber < totalQuestions ? 'Next Question' : 'Finish Quiz'}
+          </button>
         </div>
       )}
     </div>

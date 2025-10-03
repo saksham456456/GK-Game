@@ -79,14 +79,15 @@ const App: React.FC = () => {
     if (isCorrect) {
       setScore(prev => prev + 1);
     }
-    setTimeout(() => {
-      const nextQuestion = currentQuestionIndex + 1;
-      if (nextQuestion < questions.length) {
-        setCurrentQuestionIndex(nextQuestion);
-      } else {
-        setGameState(GameState.FINISHED);
-      }
-    }, 1500); // Wait 1.5 seconds to show feedback
+  };
+
+  const handleNextQuestion = () => {
+    const nextQuestion = currentQuestionIndex + 1;
+    if (nextQuestion < questions.length) {
+      setCurrentQuestionIndex(nextQuestion);
+    } else {
+      setGameState(GameState.FINISHED);
+    }
   };
 
   const restartQuiz = () => {
@@ -117,6 +118,7 @@ const App: React.FC = () => {
             questionNumber={currentQuestionIndex + 1}
             totalQuestions={questions.length}
             onAnswer={handleAnswer}
+            onNext={handleNextQuestion}
           />
         );
       case GameState.FINISHED:
