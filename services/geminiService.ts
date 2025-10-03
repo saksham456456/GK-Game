@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { Question } from '../types';
+import { Question, Difficulty } from '../types';
 
 const API_KEY = process.env.API_KEY;
 
@@ -47,8 +47,8 @@ const quizSchema = {
     required: ["questions"],
 };
 
-export const generateQuizQuestions = async (topic: string, count: number): Promise<Question[]> => {
-  const prompt = `Generate ${count} multiple-choice quiz questions about "${topic}". Follow these rules strictly:
+export const generateQuizQuestions = async (topic: string, count: number, difficulty: Difficulty): Promise<Question[]> => {
+  const prompt = `Generate ${count} multiple-choice quiz questions about "${topic}" at an ${difficulty} difficulty level. Follow these rules strictly:
 1. Each question must have an "options" array with exactly 4 unique string values.
 2. The "correctAnswer" string must be an exact, case-sensitive match to one of the strings in the "options" array.
 3. Provide a brief "explanation" for why the correct answer is correct for each question.`;

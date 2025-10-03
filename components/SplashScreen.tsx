@@ -1,0 +1,25 @@
+import React from 'react';
+
+const ClassicLogo = () => (
+  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 9.5C16 10.8807 14.8807 12 13.5 12C12.1193 12 11 10.8807 11 9.5C11 8.11929 12.1193 7 13.5 7C14.8807 7 16 8.11929 16 9.5Z" stroke="#22d3ee" strokeWidth="1.5"/>
+    <path d="M12.5 12.5C12.5 13.8807 11.3807 15 10 15C8.61929 15 7.5 13.8807 7.5 12.5C7.5 11.1193 8.61929 10 10 10C11.3807 10 12.5 11.1193 12.5 12.5Z" stroke="#22d3ee" strokeWidth="1.5"/>
+    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M4.92969 19.07C3.33969 16.32 2.67969 13.06 3.49969 10C4.31969 6.94 6.48969 4.5 9.49969 3.5" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M19.0703 4.92993C20.6603 7.67993 21.3203 10.9399 20.5003 13.9999C19.6803 17.0599 17.5103 19.4999 14.5003 20.4999" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+);
+
+const SplashScreen: React.FC = () => {
+  return (
+    <div className="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-50 animate-fade-in-out">
+      <ClassicLogo />
+      <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 mt-4">
+        AI Quiz Generator
+      </h1>
+      <p className="text-slate-500 text-sm mt-2">Powered by Saksham</p>
+    </div>
+  );
+};
+
+export default SplashScreen;

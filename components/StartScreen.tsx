@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 
 interface StartScreenProps {
-  onStart: (topic: string) => void;
+  onTopicSelect: (topic: string) => void;
   error: string | null;
   popularTopics: string[];
 }
 
-const StartScreen: React.FC<StartScreenProps> = ({ onStart, error, popularTopics }) => {
+const StartScreen: React.FC<StartScreenProps> = ({ onTopicSelect, error, popularTopics }) => {
   const [topic, setTopic] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (topic.trim()) {
-      onStart(topic.trim());
+      onTopicSelect(topic.trim());
     }
   };
 
@@ -57,7 +57,7 @@ const StartScreen: React.FC<StartScreenProps> = ({ onStart, error, popularTopics
             {popularTopics.map((popularTopic) => (
               <button
                 key={popularTopic}
-                onClick={() => onStart(popularTopic)}
+                onClick={() => onTopicSelect(popularTopic)}
                 className="px-4 py-2 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-full hover:bg-slate-700 hover:text-cyan-300 hover:border-cyan-400 transition-all"
               >
                 {popularTopic}

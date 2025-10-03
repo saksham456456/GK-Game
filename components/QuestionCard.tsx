@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Question } from '../types';
+import Timer from './Timer';
 
 interface QuestionCardProps {
   question: Question;
@@ -20,17 +21,47 @@ const ProgressBar: React.FC<{ current: number; total: number }> = ({ current, to
   );
 };
 
+const DURATION = 10;
+
 const QuestionCard: React.FC<QuestionCardProps> = ({ question, questionNumber, totalQuestions, onAnswer }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(DURATION);
+  
+  // Fix: The `NodeJS.Timeout` type is not available in browser environments. 
+  // The ID returned by `setInterval` in a browser is a `number`.
+  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     setSelectedAnswer(null);
     setIsAnswered(false);
+    setTimeLeft(DURATION);
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => prev - 1);
+    }, 1000);
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
   }, [question]);
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      if (timerRef.current) clearInterval(timerRef.current);
+      handleTimeUp();
+    }
+  }, [timeLeft]);
+
+  const handleTimeUp = () => {
+    if (isAnswered) return;
+    setIsAnswered(true);
+    onAnswer(false);
+  };
 
   const handleOptionClick = (option: string) => {
     if (isAnswered) return;
+    if (timerRef.current) clearInterval(timerRef.current);
     setSelectedAnswer(option);
     setIsAnswered(true);
     onAnswer(option === question.correctAnswer);
@@ -53,6 +84,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, questionNumber, t
     <div className="animate-fade-in-fast">
       <div className="mb-6 flex justify-between items-center">
          <span className="text-sm font-semibold text-cyan-300">Question {questionNumber} of {totalQuestions}</span>
+         <Timer duration={DURATION} timeLeft={timeLeft} isAnswered={isAnswered} />
       </div>
       <ProgressBar current={questionNumber} total={totalQuestions} />
       <h2 className="text-xl md:text-2xl font-semibold mb-8 text-center text-slate-200" dangerouslySetInnerHTML={{ __html: question.question }}></h2>

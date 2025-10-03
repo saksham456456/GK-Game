@@ -8,7 +8,10 @@ export interface Question {
 
 export enum GameState {
   START,
+  SELECT_DIFFICULTY,
   LOADING,
   PLAYING,
   FINISHED,
 }
+
+export type Difficulty = 'Easy' | 'Medium' | 'Hard';

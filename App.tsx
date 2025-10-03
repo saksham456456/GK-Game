@@ -1,10 +1,12 @@
-import React, { useState, useCallback } from 'react';
-import { GameState, Question } from './types';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GameState, Question, Difficulty } from './types';
 import { generateQuizQuestions } from './services/geminiService';
 import StartScreen from './components/StartScreen';
+import DifficultyScreen from './components/DifficultyScreen';
 import QuestionCard from './components/QuestionCard';
 import ResultScreen from './components/ResultScreen';
 import Loader from './components/Loader';
+import SplashScreen from './components/SplashScreen';
 
 const popularTopics = [
     'General Knowledge', 
@@ -17,30 +19,47 @@ const popularTopics = [
     'Sports Trivia'
 ];
 
-const BrainIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10 text-cyan-400">
-    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v1.2a1 1 0 0 0 1 1h.3a1 1 0 0 0 .9-.6 2.5 2.5 0 0 1 4.3 1.9 2.5 2.5 0 0 1 0 4.2 1 1 0 0 0-.5 1.7 2.5 2.5 0 0 1-4.2 2.1 1 1 0 0 0-1.4 0 2.5 2.5 0 0 1-4.2-2.1 1 1 0 0 0-.5-1.7 2.5 2.5 0 0 1 0-4.2A2.5 2.5 0 0 1 7.2 6a1 1 0 0 0 .9.6h.3a1 1 0 0 0 1-1V4.5A2.5 2.5 0 0 1 9.5 2z"/>
-    <path d="M12 14v1a2 2 0 0 0 2 2h.5a2 2 0 0 1 1.8 1.2 2 2 0 0 0 1.9 1.3 2 2 0 0 0 1.9-1.3 2 2 0 0 1 1.8-1.2H20a2 2 0 0 0 2-2v-1"/>
-    <path d="M12 14v1a2 2 0 0 1-2 2h-.5a2 2 0 0 0-1.8 1.2 2 2 0 0 1-1.9 1.3 2 2 0 0 1-1.9-1.3A2 2 0 0 0 4.2 17H4a2 2 0 0 1-2-2v-1"/>
+const ClassicLogo = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M16 9.5C16 10.8807 14.8807 12 13.5 12C12.1193 12 11 10.8807 11 9.5C11 8.11929 12.1193 7 13.5 7C14.8807 7 16 8.11929 16 9.5Z" stroke="#22d3ee" strokeWidth="1.5"/>
+    <path d="M12.5 12.5C12.5 13.8807 11.3807 15 10 15C8.61929 15 7.5 13.8807 7.5 12.5C7.5 11.1193 8.61929 10 10 10C11.3807 10 12.5 11.1193 12.5 12.5Z" stroke="#22d3ee" strokeWidth="1.5"/>
+    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M4.92969 19.07C3.33969 16.32 2.67969 13.06 3.49969 10C4.31969 6.94 6.48969 4.5 9.49969 3.5" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M19.0703 4.92993C20.6603 7.67993 21.3203 10.9399 20.5003 13.9999C19.6803 17.0599 17.5103 19.4999 14.5003 20.4999" stroke="#a855f7" strokeWidth="1.5" strokeLinecap="round"/>
   </svg>
 );
 
 
 const App: React.FC = () => {
+  const [showSplash, setShowSplash] = useState(true);
   const [gameState, setGameState] = useState<GameState>(GameState.START);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [currentTopic, setCurrentTopic] = useState<string>('');
+  const [currentDifficulty, setCurrentDifficulty] = useState<Difficulty | null>(null);
 
-  const startQuiz = useCallback(async (topic: string) => {
+   useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleTopicSelect = (topic: string) => {
     if (!topic) return;
-    setGameState(GameState.LOADING);
-    setError(null);
     setCurrentTopic(topic);
+    setError(null);
+    setGameState(GameState.SELECT_DIFFICULTY);
+  };
+  
+  const startQuiz = useCallback(async (difficulty: Difficulty) => {
+    if (!currentTopic) return;
+    setCurrentDifficulty(difficulty);
+    setGameState(GameState.LOADING);
     try {
-      const newQuestions = await generateQuizQuestions(topic, 5);
+      const newQuestions = await generateQuizQuestions(currentTopic, 5, difficulty);
       if (newQuestions && newQuestions.length > 0) {
         setQuestions(newQuestions);
         setCurrentQuestionIndex(0);
@@ -54,7 +73,7 @@ const App: React.FC = () => {
       setError(err instanceof Error ? err.message : 'An unknown error occurred.');
       setGameState(GameState.START);
     }
-  }, []);
+  }, [currentTopic]);
 
   const handleAnswer = (isCorrect: boolean) => {
     if (isCorrect) {
@@ -77,12 +96,20 @@ const App: React.FC = () => {
     setScore(0);
     setError(null);
     setCurrentTopic('');
+    setCurrentDifficulty(null);
   };
+  
+  const backToTopicSelect = () => {
+    setGameState(GameState.START);
+    setError(null);
+  }
 
   const renderContent = () => {
     switch (gameState) {
       case GameState.LOADING:
-        return <Loader topic={currentTopic} />;
+        return <Loader topic={currentTopic} difficulty={currentDifficulty} />;
+      case GameState.SELECT_DIFFICULTY:
+         return <DifficultyScreen topic={currentTopic} onSelect={startQuiz} onBack={backToTopicSelect} />;
       case GameState.PLAYING:
         return (
           <QuestionCard
@@ -102,23 +129,27 @@ const App: React.FC = () => {
         );
       case GameState.START:
       default:
-        return <StartScreen onStart={startQuiz} error={error} popularTopics={popularTopics} />;
+        return <StartScreen onTopicSelect={handleTopicSelect} error={error} popularTopics={popularTopics} />;
     }
   };
+
+  if (showSplash) {
+    return <SplashScreen />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-slate-900 font-sans">
       <div className="w-full max-w-4xl mx-auto">
         <header className="text-center mb-8 flex flex-col items-center">
           <div className="flex items-center gap-4 mb-2">
-            <BrainIcon />
+            <ClassicLogo />
             <h1 className="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">
               AI Quiz Generator
             </h1>
           </div>
           <p className="text-slate-500 text-sm">Powered by Saksham</p>
         </header>
-        <main className="bg-slate-800/30 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-8 border-2 gradient-border transition-all duration-500">
+        <main className="bg-slate-800/30 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-8 border-2 gradient-border transition-all duration-500 min-h-[300px] flex flex-col justify-center">
           {renderContent()}
         </main>
       </div>
