@@ -28,8 +28,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, questionNumber, t
   const [isAnswered, setIsAnswered] = useState(false);
   const [timeLeft, setTimeLeft] = useState(DURATION);
   
-  // Fix: The `NodeJS.Timeout` type is not available in browser environments. 
-  // The ID returned by `setInterval` in a browser is a `number`.
   const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -81,15 +79,24 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, questionNumber, t
   };
 
   return (
-    <div className="animate-fade-in-fast">
-      <div className="mb-6 flex justify-between items-center">
-         <span className="text-sm font-semibold text-cyan-300">Question {questionNumber} of {totalQuestions}</span>
-         <Timer duration={DURATION} timeLeft={timeLeft} isAnswered={isAnswered} />
+    <div className="animate-fade-in-fast flex flex-col items-center">
+       <div className="w-full max-w-2xl mb-4">
+        <div className="mb-2 flex justify-between items-center">
+            <span className="text-sm font-semibold text-cyan-300">Question {questionNumber} of {totalQuestions}</span>
+        </div>
+        <ProgressBar current={questionNumber} total={totalQuestions} />
       </div>
-      <ProgressBar current={questionNumber} total={totalQuestions} />
-      <h2 className="text-xl md:text-2xl font-semibold mb-8 text-center text-slate-200" dangerouslySetInnerHTML={{ __html: question.question }}></h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="relative my-4 flex items-center justify-center w-[280px] h-[280px] md:w-[320px] md:h-[320px]">
+        <Timer duration={DURATION} timeLeft={timeLeft} isAnswered={isAnswered} />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+          <span className={`text-6xl font-bold transition-colors ${isAnswered ? 'text-slate-600' : 'text-slate-200'}`}>{timeLeft}</span>
+          <h2 className="text-lg md:text-xl font-semibold text-slate-300 mt-2" dangerouslySetInnerHTML={{ __html: question.question }}></h2>
+        </div>
+      </div>
+
+
+      <div className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         {question.options.map((option, index) => (
           <button
             key={index}
@@ -104,7 +111,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, questionNumber, t
       </div>
 
       {isAnswered && (
-        <div className="mt-6 p-4 bg-slate-900/50 border-l-4 border-cyan-400 rounded-r-lg animate-fade-in">
+        <div className="w-full max-w-2xl mt-6 p-4 bg-slate-900/50 border-l-4 border-cyan-400 rounded-r-lg animate-fade-in">
           <h3 className="font-bold text-lg text-cyan-300 mb-2">Explanation</h3>
           <p className="text-slate-300" dangerouslySetInnerHTML={{ __html: question.explanation }}></p>
         </div>

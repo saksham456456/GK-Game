@@ -54,6 +54,17 @@
       .animate-fade-in-out {
         animation: fade-in-out 2.5s ease-in-out forwards;
       }
+      @keyframes pulse-timer {
+        0%, 100% {
+          filter: drop-shadow(0 0 5px #ef4444);
+        }
+        50% {
+          filter: drop-shadow(0 0 15px #ef4444);
+        }
+      }
+      .animate-pulse-timer {
+        animation: pulse-timer 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
     </style>
   </head>
   <body class="bg-slate-900 text-white">

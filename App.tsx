@@ -149,7 +149,7 @@ const App: React.FC = () => {
           </div>
           <p className="text-slate-500 text-sm">Powered by Saksham</p>
         </header>
-        <main className="bg-slate-800/30 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-8 border-2 gradient-border transition-all duration-500 min-h-[300px] flex flex-col justify-center">
+        <main className="bg-slate-800/30 backdrop-blur-lg rounded-2xl shadow-2xl p-6 md:p-8 border-2 gradient-border transition-all duration-500 min-h-[600px] flex flex-col justify-center">
           {renderContent()}
         </main>
       </div>
